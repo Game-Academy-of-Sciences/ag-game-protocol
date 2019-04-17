@@ -167,11 +167,15 @@ def trim(s):
 
 
 def output_text(*args):
-    
     print(*args)
 
 
 def output_plaza_text(*args):
+    return
+    print(*args)
+
+
+def output_table_text(*args):
     return
     print(*args)
 
@@ -193,10 +197,14 @@ def start_hear(ws):
 
 def xor_encrypt(data, key):
     # xor_encrypt([1,2,3,4,5,6,7,8], 0xffffffff)
-    
+
     enc_key = ctypes.c_uint(key).value
-    enc_data = []
+    """
+    enc_key = int(enc_key).to_bytes(4,'little')
+    enc_key = int.from_bytes(enc_key, 'big')
+    """
     
+    enc_data = []
     for x in range(0, len(data), 4):
         n = data[x: x + 4]
         n = int.from_bytes(n, 'big')
@@ -204,9 +212,21 @@ def xor_encrypt(data, key):
         enc_data.extend(int(n).to_bytes(4, 'big'))
 
     enc_data = bytes(enc_data)
-    return struct.pack(f'>iii{len(enc_data)}s', 301826, 48, 2, enc_data)
+    # 301826
+    return struct.pack(f'>iii{len(enc_data)}s', 301840, 48, 2, enc_data)
 
 
+"""
+a = xor_encrypt(bytes([0, 1, 160, 3, 0, 0, 0, 36, 0, 0, 39, 16, 71, 67, 48, 48, 49, 49, 57, 52, 49, 54, 49, 65, 69, 0, 0, 2, 0, 0, 0, 50, 0, 0, 0, 1]), 2302300525)
+print(list(a))
+import sys
+sys.exit()
+
+[0, 4, 155, 2, 0, 0, 0, 48, 0, 0, 0, 2, 137, 59, 241, 110, 137, 58, 81, 73, 137, 58, 118, 125, 206, 121, 97, 93, 184, 11, 104, 89, 184, 12, 96, 44, 204, 58, 81, 111, 137, 58, 81, 95, 137, 58, 81, 108]
+[0, 4, 155, 16, 0, 0, 0, 48, 0, 0, 0, 2, 137, 59, 241, 110, 137, 58, 81, 73, 137, 58, 118, 125, 206, 121, 97, 93, 184, 11, 104, 89, 184, 12, 96, 44, 204, 58, 81, 111, 137, 58, 81, 95, 137, 58, 81, 108]
+"""
+
+# roomTimerStore  gmcode
 
 """
     u7v["getCMDGameBetCancel"] = function(T1Y, U1Y, m1Y) {
