@@ -12,7 +12,7 @@ global user_encryptKey
 global user_decryptKey
 global broad_decryptKey
 
-    
+
 table_lock = Lock()
 
 user_encryptKey = None
@@ -69,12 +69,21 @@ def connect_table(login_info, vid):
             return ws
     return None
 
+global buy_money
+global fail_count
 
-def process_table(login_info, ws, ws_data):
+buy_money = 20
+fail_count = 0
+buy_type = 1
+
+
+def process_table(login_info, ws, ws_data, vid):
     global user_encryptKey
     global user_decryptKey
     global broad_decryptKey
     global buy_money
+    global fail_count
+    global buy_type
 
     (flags, ) = struct.unpack('>i', ws_data[:4])
     # output_text('table ' + str(flags))
@@ -105,8 +114,6 @@ def process_table(login_info, ws, ws_data):
         if retCode == 0:
             output_text('table 进入成功')
 
-            # money = 20
-            # cmd_down_bet(ws, table_code, money, 1, user_encryptKey)
             cmd_get_game_status(ws)
             # 开始心跳
             start_hear(ws)            
@@ -116,7 +123,10 @@ def process_table(login_info, ws, ws_data):
     # GameNoBetWarnResp
     elif flags == 131103:
         flags, length, _, roundNum = struct.unpack('>iiiB', ws_data[:13])
-        output_text(f'table 未下注警告: {roundNum}')
+        cmd_exit_table(ws)
+        cmd_enter_table(ws, login_info, vid)
+        output_text(f'table 未下注警告: {roundNum} -----------------------------')
+        
     # onPayoutOtherResp
     elif flags == 131129:
         output_table_text('onPayoutOtherResp')
@@ -137,33 +147,44 @@ def process_table(login_info, ws, ws_data):
         gmcode = trim(gmcode).decode()
         ws.send_binary(struct.pack('>iii', 1, 12, result))
         
-        buy_type = random.randint(1, 2)
+        """
+        buy_type = 2
+        buy_money = 20
+        # 连续3次以上长龙庄就不买
+        if fail_count <= 2:
+            cmd_down_bet(ws, user_encryptKey, gmcode, buy_money, buy_type)    
         
-        if buy_type == 1:
-            buy_money = 20
+            print('----GameStartResp----')
+            print('桌号: ' + gmcode)
+            print('下注: ' + str(int(buy_money)))
+            print('购买: ' + ['庄', '闲', '和'][buy_type - 1])
         else:
             buy_money = 20
+            fail_count = 0
+        """
+    elif flags == 172049:
+        print(1)
         
-        
-        cmd_down_bet(ws, user_encryptKey, gmcode, buy_money, buy_type)
-            
-        print('----GameStartResp----')
-        print('桌号: ' + gmcode)
-        print('下注: ' + str(int(buy_money)))
-        print('购买: ' + ['庄', '闲', '和'][buy_type - 1])
-
-
     # GamePayoutMeResp
     elif flags == 131088:
         flags, length, _, gmcode, payout, balance, ptNum = struct.unpack('>iii14sddB', ws_data[:43])
         gmcode = trim(gmcode).decode()
         
+    
         print('----GamePayoutMeResp----')
         print(f'balance: {balance}')
         print(f'payout: {payout}')
         print(f'ptNum: {ptNum}')
         
-
+        if int(payout) > 0:
+            buy_money = 20
+            fail_count = 0
+            
+        elif int(payout) < 0:
+            buy_money += buy_money
+            fail_count += 1
+             
+    
    # GameBetResp
     elif flags == 131075:
         output_table_text('GameBetResp')
@@ -172,6 +193,8 @@ def process_table(login_info, ws, ws_data):
             print('下注: 成功')
         else:
             print('下注: 失败')
+            
+        
     
     # GameTablePoolResp
     elif flags == 172083:
@@ -214,12 +237,12 @@ def process_table(login_info, ws, ws_data):
         output_table_text('GameJettonExtResp')
     # 密匙
     elif flags == 73986:
-        (user_encryptKey, ) = struct.unpack('>I', ws_data[49:53])
+        # (user_encryptKey, ) = struct.unpack('>I', ws_data[49:53])
         pass
 
     elif flags == 301825:
         flags, length, seqNo, key_type,  key  = struct.unpack('>iiiBI', ws_data[:17])
-        output_table_text(seqNo)
+        
         # userencryptKey
         if key_type == 0:
             if not user_encryptKey:
@@ -271,13 +294,14 @@ def process_table(login_info, ws, ws_data):
         timeout, max_timeout = struct.unpack('>HH', ws_data[-4:])
     
     # 需要解密的内容
-    elif flags == 301584:
-        pass   
+    elif flags == 301840:
+        flags, length, _, ws_data  = struct.unpack('>iii{len(ws_data) - 12}s', ws_data)
+        process_table(login_info, ws, ws_data, vid)
+        
         
     # RestShoecodeResp
     elif flags == 131100:
-        pass
-        # output_table_text('RestShoecodeResp')
+        output_table_text('RestShoecodeResp')
 
     # DealCardListResp
     elif flags == 368642:
@@ -304,16 +328,17 @@ def start_table(login_info, vid):
             if len(ws_data) >= 12:
                 with table_lock:
                     try:
-                        process_table(login_info, ws, ws_data)
+                        process_table(login_info, ws, ws_data, vid)
+                        
                     except:
                         import traceback
-                        output_text(traceback.output_table_text_exc())
+                        output_text(traceback.print_exc())
                         output_text('table 处理消息异常')
             else:
                 output_text('table 数据异常')
     except:
         import traceback
-        output_text(traceback.output_table_text_exc())
+        output_text(traceback.print_exc())
         output_text('table 异常结束')
     output_text('table 关闭处理')
 

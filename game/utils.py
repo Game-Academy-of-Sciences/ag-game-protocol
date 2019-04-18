@@ -176,7 +176,7 @@ def output_plaza_text(*args):
 
 
 def output_table_text(*args):
-    return
+    
     print(*args)
 
 
@@ -214,6 +214,34 @@ def xor_encrypt(data, key):
     enc_data = bytes(enc_data)
     # 301826
     return struct.pack(f'>iii{len(enc_data)}s', 301840, 48, 2, enc_data)
+
+
+def xor_decrypt(data):
+    dec_key = int.from_bytes(bytes([90, 191, 82, 114]), 'big')
+    
+    dec_data = []
+    
+    for x in range(0, len(data), 4):
+        n = data[x: x + 4]
+        n = int.from_bytes(n, 'big')
+        n = ctypes.c_uint(n ^ dec_key).value
+        dec_data.extend(int(n).to_bytes(4, 'big'))
+
+    dec_data = bytes(dec_data)
+    return dec_data
+
+
+# xor_decrypt(bytes([90, 189, 114, 112, 90, 191, 82, 101, 90, 191, 82, 114, 90, 191, 82, 114, 8, 240, 19, 54, 95, 191, 82]))
+
+
+
+
+"""
+print(calc_bets_money(20, 0, 2, 3))
+
+import sys
+sys.exit()
+"""
 
 
 """
