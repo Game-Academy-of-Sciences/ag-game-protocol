@@ -4,8 +4,9 @@ from game.table import start_table
 from game.utils import LoginInfo, EnvPortConf
 from threading import Thread
 
+# 'http://gci.ig50.com:81/forwardGame.do?params=BfUOR2ITCv/M7XuVWKRFoLEAQktsSbZH5+AHtj4uaegLkIDW/+PfMk+b6F3F8CV6G8ecFMtuY5ULbqPe5cmjNWan8Y3zxL8IgJfzfwTfUBbX9Ax03a2AALnJA4SJ4+qu6nIObRoTKVkgStJt3N2QIRo45HUb7HkelO3x1cQmzb/57KQID0v5oatJlwkxuzbnZkQ6L5kVtXVu7JR/IEiaag==&key=4f79b4f35a0f5d8d2856ee8dd9292ae1'
 
-login_info = login_from_url('http://gci.ig50.com:81/forwardGame.do?params=BfUOR2ITCv/M7XuVWKRFoLEAQktsSbZH5+AHtj4uaegLkIDW/+PfMk+b6F3F8CV6G8ecFMtuY5ULbqPe5cmjNWan8Y3zxL8IgJfzfwTfUBbX9Ax03a2AALnJA4SJ4+qu6nIObRoTKVkgStJt3N2QIRo45HUb7HkelO3x1cQmzb/57KQID0v5oatJlwkxuzbnZkQ6L5kVtXVu7JR/IEiaag==&key=4f79b4f35a0f5d8d2856ee8dd9292ae1')
+login_info = login_from_url()
 
 if not login_info:
     print('登录失败')
@@ -17,7 +18,8 @@ def plaza_process(event, ws, plaza_info, *args):
         if status:
             print('登录成功')
 
-            Thread(target=start_table, args=(plaza_info.login_info, 'C003')).start()
+            plaza_info.vid = 'C003'
+            Thread(target=start_table, args=(plaza_info, )).start()
 
             # start_table(plaza_info.login_info, 'C001')
         else:

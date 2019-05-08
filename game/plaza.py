@@ -111,7 +111,7 @@ def process_plaza(ws, ws_data, callback):
             }
 
             callback('game_result', ws, plaza_info, vid, bval, pval)
-
+            # print(vid, res, code, bval, pval, num, pair)
 
         output_plaza_text('plaza 游戏结果 vid: {} \t bval: {} \t pval: {}'.format(vid, bval, pval))
 
@@ -153,7 +153,7 @@ def process_plaza(ws, ws_data, callback):
 
         output_plaza_text('plaza 异常退出(可能是异地登录)')
         return
-
+    
 
 
 def connect_plaza(login_info):

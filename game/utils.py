@@ -100,6 +100,7 @@ class PlazaInfo:
     room_time: dict = field(default_factory=dict)
     video_token: dict = field(default_factory=dict)
     room_result: dict = field(default_factory=dict)
+    vid:str = field(default='C001')
 
     def __init__(self):
         self.room_time = dict()
@@ -216,8 +217,12 @@ def xor_encrypt(data, key):
     return struct.pack(f'>iii{len(enc_data)}s', 301840, 48, 2, enc_data)
 
 
-def xor_decrypt(data):
-    dec_key = int.from_bytes(bytes([90, 191, 82, 114]), 'big')
+def xor_decrypt(data, key):
+    # 主要解密未完成，以下是第二个解密
+    # dec_key = int.from_bytes(bytes([90, 191, 82, 114]), 'big')
+    # 1522487922
+    dec_key = ctypes.c_uint(key).value
+    
     
     dec_data = []
     
@@ -231,7 +236,7 @@ def xor_decrypt(data):
     return dec_data
 
 
-# xor_decrypt(bytes([90, 189, 114, 112, 90, 191, 82, 101, 90, 191, 82, 114, 90, 191, 82, 114, 8, 240, 19, 54, 95, 191, 82]))
+# xor_decrypt(bytes([131, 22, 108, 92, 131, 19, 204, 119, 131, 19, 204, 94, 196, 80, 252, 110, 176, 34, 245, 106, 178, 43, 252, 23, 197, 19, 143, 110, 179, 32, 224, 93, 131, 23, 204, 94, 152, 63, 204, 94, 131]), 1522487922)
 
 
 
