@@ -11,9 +11,10 @@ global table_lock
 global user_encryptKey
 global user_decryptKey
 global broad_decryptKey
-
+global room_lock
 
 table_lock = Lock()
+room_lock = Lock()
 
 user_encryptKey = None
 user_decryptKey = None
@@ -97,6 +98,8 @@ def process_table(plaza_info, ws, ws_data):
     (flags, ) = struct.unpack('>i', ws_data[:4])
     # output_text('table ' + str(flags))
 
+    if flags  == 301825:
+        print(11)
     # LoginGameExtResp
     if flags == 139266:
         flags, length, _, retCode, vid, deviceType, reserve1, reserve2 = struct.unpack('>iiiI4sBBB', ws_data[:23])
@@ -142,19 +145,25 @@ def process_table(plaza_info, ws, ws_data):
         gmcode = trim(gmcode).decode()
         ws.send_binary(struct.pack('>iii', 1, 12, result))
         
-        
+        '''
         buy_type = 2
         if fail_count >=3:
             buy_type = 1
-
+        '''
+        buy_type = random.randint(1, 3)
+        if buy_type != 1:
+            buy_type = 2
+            buy_money = 20
+        else:
+            buy_money = 50
         cmd_down_bet(ws, user_encryptKey, gmcode, buy_money, buy_type)    
         
         print('----GameStartResp----')
+        print(f'vid: {plaza_info.vid}')
         print('桌号: ' + gmcode)
         print('下注: ' + str(int(buy_money)))
         print('购买: ' + ['庄', '闲', '和'][buy_type - 1])
         
-
     elif flags == 172049:
         print(1)
 
@@ -163,6 +172,7 @@ def process_table(plaza_info, ws, ws_data):
         flags, length, _, gmcode, payout, balance, ptNum = struct.unpack('>iii14sddB', ws_data[:43])
         gmcode = trim(gmcode).decode()
 
+        '''
         if int(payout) > 0:
             buy_money = 20
             fail_count = 0
@@ -170,14 +180,16 @@ def process_table(plaza_info, ws, ws_data):
         elif int(payout) < 0:
             buy_money += 10
             fail_count += 1
-        
+        '''
         print('----GamePayoutMeResp----')
+        print(f'vid: {plaza_info.vid}')
+        print('桌号: ' + gmcode)
         print(f'balance: {balance}')
         print(f'payout: {payout}')
         print(f'ptNum: {ptNum}')
 
-
-    
+        # ws.connected = False
+        
    # GameBetResp
     elif flags == 131075:
         # output_table_text('GameBetResp')
@@ -221,7 +233,7 @@ def process_table(plaza_info, ws, ws_data):
 
     elif flags == 301584:
         _, length, _, flags  = struct.unpack('>iiiI', ws_data[:16])
-        print(flags)
+        # print(flags)
         
     
     elif flags == [133692, 135228]:
@@ -277,6 +289,8 @@ def process_table(plaza_info, ws, ws_data):
 
 def start_table(plaza_info):
     global table_lock
+    global room_lock
+
     output_text('table 开始监控')
     try:
         ws = connect_table(plaza_info)
@@ -289,15 +303,18 @@ def start_table(plaza_info):
                     try:
                         process_table(plaza_info, ws, ws_data)
                     except:
+                        '''
                         import traceback
                         output_text(traceback.print_exc())
-                        
+                        '''
                         output_text('table 处理消息异常')
             else:
                 output_text('table 数据异常')
     except:
+        '''
         import traceback
         output_text(traceback.print_exc())
+        '''
         output_text('table 异常结束')
         
     output_text('table 关闭处理')

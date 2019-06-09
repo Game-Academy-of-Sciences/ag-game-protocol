@@ -53,6 +53,12 @@ def process_plaza(ws, ws_data, callback):
         # 131080
         print(flags)
     """
+    '''
+    if flags  in [301569, 301584, 301825, 301840, ]:
+        print('11')
+    '''
+    if flags  == 301825:
+        print(11)
     
     # 登录
     # LoginPlazaResp pass
@@ -106,6 +112,7 @@ def process_plaza(ws, ws_data, callback):
         with plaza_data_lock:
             plaza_info.room_result[vid] = {
                 'vid': vid, 
+                'code': code,
                 'bval': bval,
                 'pval': pval
             }
@@ -114,7 +121,6 @@ def process_plaza(ws, ws_data, callback):
             # print(vid, res, code, bval, pval, num, pair)
 
         output_plaza_text('plaza 游戏结果 vid: {} \t bval: {} \t pval: {}'.format(vid, bval, pval))
-
         
     # 百家乐视频时间, 需要自行设置定时器
     elif flags == 131125:

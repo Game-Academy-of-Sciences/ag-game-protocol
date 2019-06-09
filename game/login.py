@@ -8,8 +8,11 @@ def login_from_url(login_url=None):
         session = requests.session()
 
         if not login_url:
+            is_guest = True
             login_url = 'http://gci.ig50.com:81/forwardGame.do?params=BfUOR2ITCv/M7XuVWKRFoLEAQktsSbZH5igCG/uCJBsLkIDW/+PfMnxsg6IgOhW4irEk9czUAgO6v9oqNHF8n2an8Y3zxL8Icwh/E64a0JtKrAA0qJyh+bnJA4SJ4+qu6nIObRoTKVkRrGkuLTsbNxJ0/Kdt3GBPWP59mZc0PVi9iHiZJj/3Q9x/o1NwdKS55/wewSbL6dLbwch9DERWIitazTI8ZI+fe1/iZloMyoDhr1fsVVCBHf95iNPIkzTLyRF8RJK8NiCZhN9q6f1KzQ==&key=210b2174778ee06b27f897dcf7cc4a22'
-
+        else:
+            is_guest = False
+        
         text = session.get(login_url).text
         # 新版本可能是2次跳转
         try:
@@ -34,7 +37,7 @@ def login_from_url(login_url=None):
         username = re.search(r"username:\s*'(.+)'", text).group(1)
         do_forward = re.search(r"doForward:\s*'(.+)'", text).group(1)
 
-        is_guest = re.search(r"dm:\s*'(.+)'", text).group(1) != 'pls_pass_dm'
+        # is_guest = re.search(r"dm:\s*'(.+)'", text).group(1) == 'pls_pass_dm'
 
         info = urlsplit(login_url)
         game_base_uri = f'{info.scheme}://{info.hostname}:{info.port}'
