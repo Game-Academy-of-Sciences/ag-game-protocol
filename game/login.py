@@ -14,19 +14,20 @@ def login_from_url(login_url=None):
             is_guest = False
         
         text = session.get(login_url).text
-        # 新版本可能是2次跳转
+
         try:
             url = PyQuery(text)('meta[http-equiv="refresh"]').attr('content')
             url = re.search(r"url=(.*)", url).group(1)
             if not url.startswith('http'):
                 info = urlsplit(login_url)
                 url = f'{info.scheme}://{info.hostname}:{info.port}/agingame/' + url
-            version = re.search(r'agingame/v([0-9]+)/', url).group(1)
+            version = re.search(r'/agingame/(.*?)/', url).group(1)
             text = session.get(url).text
         except:
             return None
-        
-        conf_url = f'{info.scheme}://{info.hostname}:{info.port}/agingame/v{version}/resource/config/host_config.xml?timestamp={int(time.time() * 1000)}&_count=0'
+
+
+        conf_url = f'{info.scheme}://{info.hostname}:{info.port}/agingame/{version}/resource/config/host_config.xml?timestamp={int(time.time() * 1000)}&_count=0'
         port_conf = parser_conf(requests.get(conf_url).text)
 
         # 获取配置信息

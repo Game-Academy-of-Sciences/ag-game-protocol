@@ -99,7 +99,7 @@ def process_table(plaza_info, ws, ws_data):
     # output_text('table ' + str(flags))
 
     if flags  == 301825:
-        print(11)
+        pass
     # LoginGameExtResp
     if flags == 139266:
         flags, length, _, retCode, vid, deviceType, reserve1, reserve2 = struct.unpack('>iiiI4sBBB', ws_data[:23])
