@@ -1,0 +1,16 @@
+{
+  "name": "ag-bac",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "koa": "^2.8.1",
+    "koa-better-body": "^3.0.4",
+    "koa-better-router": "^2.1.1",
+    "koa-convert": "^1.2.0",
+    "mimetypes": "^0.1.1"
+  }
+}

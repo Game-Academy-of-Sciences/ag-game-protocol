@@ -1,0 +1,60 @@
+
+http://gci.ig50.com:81/agingame/v177/resource/config/host_config.xml?timestamp=1554568413382&_count=0
+
+
+<config>
+
+       <!-- <environment name="PROD" domain="216.108.242.37"> -->
+        <environment name="PROD" domain="216.108.244.37">
+        <host hostType="login" gameType="" platform="" port="5035"/>
+        <host hostType="plaza" gameType="" platform="" port="5000"/>
+        <host hostType="game" gameType="BAC" platform="DSP" port="5101" vids="C001"/>
+        <host hostType="game" gameType="BAC" platform="DSP" port="5102" vids="C002"/>
+        <host hostType="game" gameType="BAC" platform="DSP" port="5103" vids="C003"/>
+        <host hostType="game" gameType="BAC" platform="DSP" port="5105" vids="C005"/>
+        <host hostType="game" gameType="BAC" platform="SPECIAL" port="5106" vids="C006"/>
+        <host hostType="game" gameType="ROU" platform="DSP" port="5160" vids="C008"/>
+        <host hostType="game" gameType="BAC" platform="AGQ" port="5201" vids="B001 B002"/>
+        <host hostType="game" gameType="BAC" platform="AGQ" port="5202" vids="B003 B004"/>
+        <host hostType="game" gameType="BAC" platform="AGQ" port="5203" vids="B005 B006"/>
+        <host hostType="game" gameType="NN"  platform="AGQ" port="5223" vids="B022"/>
+        <host hostType="game" gameType="ROU" platform="AGQ" port="5260" vids="B023"/>
+        <host hostType="game" gameType="LBAC" platform="LED" port="5132" vids="V012 V015 V016 V017 V018 V019 V020"/>
+	<host hostType="game" gameType="SHB" platform="DSP" port="5161" vids="C015"/>
+        <host hostType="game" gameType="SHB" platform="AGQ" port="5261" vids="B025"/>
+        <host hostType="game" gameType="DT" platform="DSP" port="5120" vids="C007"/>
+        <host hostType="game" gameType="DT" platform="AGQ" port="5220" vids="B021"/>
+        <host hostType="game" gameType="BJ" platform="DSP" port="5121" vids="C010"/>
+	<host hostType="game" gameType="BAC" platform="DSP" port="5473" vids="C012"/> 
+        <host hostType="game" gameType="SBAC" platform="AGQ" port="5200" vids="B007"/>
+        <host hostType="game" gameType="ZJH" platform="DSP" port="5122" vids="C016"/>
+        <host hostType="game" gameType="CBAC" platform="VIP" port="5230" vids="T023 T024 T025 T026 T027 T028 T029 T030"/>
+        <host hostType="game" gameType="ABAC" platform="VIP" port="5131" vids="V010 V011 V013"/>
+        <host hostType="chat" gameType="" platform="" port="5030"/>
+        <host hostType="road" gameType="" platform="" port="5075"/>
+        <host hostType="multi-table" gameType="" platform="" port="5085"/>
+        <host hostType="multi-table-live" gameType="" platform="" port="5065"/>
+	<host hostType="game" gameType="BF" platform="DSP" port="5124" vids="C019"/>
+	<!-- COMP -->
+        <host hostType="game" gameType="TBAC" platform="COMP" serverid="30030" port="5448"/>
+        <host hostType="game" gameType="TBAC" platform="COMP" serverid="30031" port="5449"/>
+        <host hostType="game" gameType="TBAC" platform="COMP" serverid="30032" port="5451"/>
+        <host hostType="game" gameType="TBAC" platform="COMP" serverid="30030" port="5443" watch="1"/>
+        <host hostType="game" gameType="TBAC" platform="COMP" serverid="30031" port="5445" watch="1"/>
+        <host hostType="game" gameType="TBAC" platform="COMP" serverid="30032" port="5441" watch="1"/>
+	<!-- EMA -->
+	<host hostType="game" gameType="BJ" platform="EMA" port="5311" vids="D021"/>
+	<host hostType="game" gameType="BAC" platform="EMA" port="5302" vids="D051"/>
+	<host hostType="game" gameType="ROU" platform="EMA" port="5320" vids="D001"/>
+	<host hostType="game" gameType="BAC" platform="EMA" port="5303" vids="D052"/>
+	<host hostType="game" gameType="BJ" platform="EMA" port="5312" vids="D022"/>
+	<host hostType="game" gameType="BJ" platform="EMA" port="5313" vids="D023"/>
+        <!--AGNW新世界-->
+        <host hostType="game" gameType="BAC" platform="AGNW" port="5371" vids="E001 E002"/>
+        <host hostType="game" gameType="BAC" platform="AGNW" port="5372" vids="E003 E005"/>
+        <host hostType="game" gameType="BAC" platform="AGNW" port="5373" vids="E006 E007"/>
+        <host hostType="game" gameType="BAC" platform="AGNW" port="5374" vids="E008 E009"/>
+        <host hostType="game" gameType="DT" platform="AGNW" port="5380" vids="E010"/>
+        <host hostType="game" gameType="ZJH" platform="AGNW" port="5381" vids="E011"/>
+    </environment>
+</config>
