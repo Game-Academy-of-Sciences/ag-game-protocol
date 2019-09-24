@@ -70,15 +70,14 @@ def process_plaza(ws, ws_data, callback):
                 plaza_info.is_login = True
                 cmd_get_vaild_bet(ws, plaza_info.login_info)
             
-            start_hear(ws)
+            # start_hear(ws)
             
             output_plaza_text('plaza 登录成功')
-
             callback('login', ws, plaza_info, True)
             # 开始登录
+            return
         else:
             ws.close()
-            output_plaza_text('plaza 登录失败：{}'.format(retcode))
             callback('login', ws, plaza_info, False)
             return
     
@@ -131,13 +130,14 @@ def process_plaza(ws, ws_data, callback):
             plaza_info.room_time[vid] = timeout
             callback('reset_time', ws, plaza_info, vid, timeout)
 
+        print( vid, status, timeout, max_timeout, last_res)
         output_plaza_text('plaza 重置时间 vid: {} \t timeout: {}'.format(vid, timeout))
 
     # 有效投注
     # UserPointResp
     elif flags == 262233:
         if len(ws_data) >= 48:
-            flags, length, _, retCodeInt, graphIndex, levelInt, scoreInt, dayPayoffNum, dayValidBetNum, totalBetNum, loginLongNum, totalBetNum = struct.unpack('>iiiiiiifffff', ws_data[:48])
+            flags, length, _, retCodeInt, graphIndex, levelInt, scoreInt, dayPayoffNum, dayValidBetNum, totalBetNum, loginLongNum = struct.unpack('>iiiiiiiffffd', ws_data[:48])
         else:
             flags, length, _, retCodeInt, graphIndex, levelInt, scoreInt, dayPayoffNum, dayValidBetNum, totalBetNum, loginLongNum = struct.unpack('>iiiiiiifffff', ws_data[:44])
             totalBetNum = 0

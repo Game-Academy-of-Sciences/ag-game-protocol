@@ -172,7 +172,6 @@ def output_text(*args):
 
 
 def output_plaza_text(*args):
-    return
     print(*args)
 
 

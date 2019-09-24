@@ -121,7 +121,7 @@ def process_table(plaza_info, ws, ws_data):
     # print(flags)
     # LoginGameExtResp
     if flags == 139266:
-        flags, length, _, retCode, vid, deviceType, reserve1, reserve2 = struct.unpack('>iiiI4sBBB', ws_data[:23])
+        flags, length, seqNo, retCode, vid, deviceType, reserve1, reserve2 = struct.unpack('>iiiI4sBBB', ws_data[:23])
         vid = trim(vid).decode()
 
         if retCode == 0:
@@ -172,9 +172,9 @@ def process_table(plaza_info, ws, ws_data):
         buy_type = random.randint(1, 3)
         if buy_type != 1:
             buy_type = 2
-            buy_money = 20
+            buy_money = 2000
         else:
-            buy_money = 50
+            buy_money = 2000
         print("下注")
         cmd_down_bet(ws, gmcode, buy_money, buy_type)    
         
@@ -225,7 +225,7 @@ def process_table(plaza_info, ws, ws_data):
         # output_table_text(ws_data)
         pass
 
-    # 心跳
+    # 没用
     elif flags == 135195:
         test_data = bytes([0x00, 0x86, 0x00, 0x02, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00, 0x00])
         ws.send_binary(test_data)
@@ -344,6 +344,40 @@ def process_table(plaza_info, ws, ws_data):
 
     # BacBeadListResp
     elif flags == 131080:
+        flags, length, _, vid, dataLen, ws_data  = struct.unpack(f'>iii4si{len(ws_data) - 20}s', ws_data)
+        for x in range(dataLen):
+            buf = ws_data[x * 18: (x + 1) * 18]
+            gmcode, bval, pval, overallRes1, overallRes2 = struct.unpack(f'>14sBBBB', buf)
+            '''
+            result = []
+            if (overallRes & 1) >> 0 == 1 or (overallRes & 128) >> 7 == 1:
+                result.append('庄')
+            if (overallRes & 2) >> 1 == 1:
+                result.append('闲')
+            if (overallRes & 4) >> 2 == 1:
+                result.append('和')
+            if (overallRes & 8) >> 3 == 1:
+                result.append('庄对')
+            if (overallRes & 16) >> 4 == 1:
+                result.append('闲对')
+            if (overallRes & 32) >> 5 == 1:
+                result.append('大')
+            if (overallRes & 64) >> 6 == 1:
+                result.append('小')
+            if (overallRes & 256) >> 8 == 1:
+                result.append('庄龙宝')
+            if (overallRes & 512) >> 9 == 1:
+                result.append('闲龙宝')
+            if (overallRes & 1024) >> 10 == 1:
+                result.append('超级6')
+            if (overallRes & 2048) >> 11 == 1:
+                result.append('任意对子')
+            if (overallRes & 4096) >> 12 == 1:
+                result.append('完美对子')
+            '''
+            print(gmcode, bval, pval, overallRes1, overallRes2)
+
+
         print('表盘数据')
     
         '''
@@ -474,6 +508,47 @@ def process_table(plaza_info, ws, ws_data):
 
     # DealCardListResp
     elif flags == 368642:
+        flags, length, _, gmcode,vid, _, bankerCardList, playerCardList, _  = struct.unpack('>iii14s4s3s3s3s2s', ws_data[:41])
+        
+        bankerCardList = list(bankerCardList)
+        playerCardList = list(playerCardList)
+        
+        table = 'A,1,2,3,4,5,6,7,8,9,10,J,Q,K'.split(',')
+        for x in range(3):
+            pType = int(bankerCardList[x] / 16)
+            if pType == 0:
+                pType = '♣'
+            elif pType == 1:
+                pType = '♦'
+            elif pType == 2:
+                pType = '♠'
+            elif pType == 3:
+                pType = '♥'
+            else:
+                pType = ''
+            if bankerCardList[x] == 0:
+                bankerCardList[x] = ''
+            else:
+                bankerCardList[x] = pType + ':' + table[bankerCardList[x] % 16]
+            
+        for x in range(3):
+            pType = int(playerCardList[x] / 16)
+            if pType == 0:
+                pType = '♣'
+            elif pType == 1:
+                pType = '♦'
+            elif pType == 2:
+                pType = '♠'
+            elif pType == 3:
+                pType = '♥'
+            else:
+                pType = ''
+            if playerCardList[x] == 0:
+                playerCardList[x] = ''
+            else:
+                playerCardList[x] = pType + ':' + table[playerCardList[x] % 16]
+        print(gmcode,vid, _, playerCardList, bankerCardList)
+
         output_table_text('DealCardListResp(翻拍开牌)')
     # DealCardResp
     elif flags == 327682:
@@ -481,6 +556,22 @@ def process_table(plaza_info, ws, ws_data):
     else:
         return
         output_table_text('table: ' + str(flags))
+
+# [0, 5, 160, 2, 0, 0, 0, 41, 0, 0, 0, 0, 71, 67, 48, 48, 49, 49, 57, 57, 49, 53, 48, 79, 50, 0, 67, 48, 48, 49, 50, 6, 1, 55, 36, 50, 55, 21, 58, 0, 0]
+'''
+[0, 5, 160, 2, 
+0, 0, 0, 41, 
+0, 0, 0, 0, 
+
+71, 67, 48, 48, 49, 49, 57, 57, 49, 53, 48, 79, 50, 0, 
+
+[67, 48, 48, 49], 
+
+[50, 6, 1, 
+55, 36, 50, 
+55, 21, 58,
+ 0, 0]
+'''
 
 
 def start_table(plaza_info):

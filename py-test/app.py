@@ -6,7 +6,7 @@ from game.table import start_table
 from game.utils import LoginInfo, EnvPortConf
 from threading import Thread
 
-
+'''
 import requests
 import base64
 data = { 
@@ -16,7 +16,7 @@ resp = requests.post('http://localhost:8888/AGSecurity/Decrypt', data=data)
 decryptResult = resp.json()
 print(list(base64.b64decode(decryptResult['data'])))
 print(decryptResult)
-
+'''
 
 
 '''
@@ -62,7 +62,7 @@ def plaza_process(event, ws, plaza_info, *args):
             print('登录成功')
 
             plaza_info.vid = 'C001'
-            start_table(plaza_info)
+            # start_table(plaza_info)
 
             # start_table(plaza_info.login_info, 'C001')
         else:

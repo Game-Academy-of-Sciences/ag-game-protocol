@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ag-bac</title>
+    <script src="https://cdn.staticfile.org/vue/2.6.10/vue.min.js"></script>
+    <style>
+        table {  border-collapse: collapse;}  
+        body {
+            margin: 0 auto;
+            width: 1024px;
+        }
+
+        .round {
+            width: 20px;
+            height: 20px;
+            font-size: 0.8em;
+            border-radius: 50%;
+            color: white;
+            text-align: center;
+        }
+        .red {
+            background-color: brown;
+        }
+
+        .blue {
+            background-color: blue;
+        }
+        .green {
+            background-color: green;
+        }
+        .yellow {
+            background-color: orange;
+        }
+        .text-yellow {
+            color: orange;
+        }
+        .text-red {
+            color: red;
+        }
+        .text-green {
+            color: green;
+        }
+        .table {
+            display: inline-block;
+            width: auto;
+            margin-right: 30px;
+        }
+        td {
+            text-align: center
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="app">
+
+        <h2 style="text-align: center">AG - 结果查看(试玩帐号)</h2>
+        <p style="text-align: center"><small >(如果时间不动，可能是掉线了请刷新)</small></p>
+        <div class="table"  v-for="(roomData, roomName) in tableData">
+            <h4>{{ roomName }} - <font color="red">{{ getTimeout(roomData.timeout) }}</font> <small>状态：<span v-bind:class="getRoomStatusStyle(roomData.status)">{{ roomData.status }}</span></small></h4>
+            <table border="1" cellspacing="0" cellpadding="0">
+                <tbody>
+                    <template v-for="(item, index) in [...new Array(grid.x * grid.y)]">
+                        <tr v-if="index % grid.x ===0">
+                            <td v-bind:class="['round', getDataClass(roomData.beadList, index + offset)]"  v-for="(_, offset) in [...new Array(grid.x)]">{{ getDataText(roomData.beadList, index + offset) }}</td>
+                        </tr>
+                    </template> 
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    
+    </table>
+    <script>
+        new Vue({
+            el: '#app',
+            data: function() {
+                return {
+                    grid: {
+                        y: 6,
+                        x: 20
+                    },
+                    tableData: {
+                        C001: {
+                            status: '正常',
+                            timeout: 0,
+                            shoecode: false,
+                            beadList: [  /*{gmcode: 1, bval:1, pval:2}*/ ]
+                        },
+                        C002: {
+                            status: '正常',
+                            timeout: 0,
+                            shoecode: false,
+                            beadList: [ /* {gmcode, bval, pval} */]
+                        },
+                        C003: {
+                            status: '正常',
+                            timeout: 0,
+                            shoecode: false,
+                            beadList: [ /* {gmcode, bval, pval} */]
+                        },
+                        C005: {
+                            status: '正常',
+                            timeout: 0,
+                            shoecode: false,
+                            beadList: [ /* {gmcode, bval, pval} */]
+                        },
+                        C006: {
+                            status: '正常',
+                            timeout: 0,
+                            shoecode: false,
+                            beadList: [ /* {gmcode, bval, pval} */]
+                        },
+                    }
+                }
+            }, 
+            created: function() {
+                window.mainProcess(this);
+            },
+            methods: {
+                getDataText: function(roomData, i) {
+                    var data = this.transform(roomData, i);
+                    if(data === undefined) {
+                        return ''
+                    }
+                    if(data.bval > data.pval) {
+                        return '庄'
+                    } else if((data.bval < data.pval)){
+                        return '闲'
+                    } else {
+                        return '和'
+                    }
+                },
+                getDataClass: function(roomData, i) {
+                    switch(this.getDataText(roomData, i)) {
+                        case '庄':
+                            return 'red'
+                        case '闲':
+                            return 'blue'
+                        case '和':
+                            return 'green'
+                        default:
+                            return ''
+                    }
+                },
+                getTimeout: function(i) {
+                    i = '00' + i;
+                    return i.substr(i.length - 2,i.length);
+                },
+                getRoomStatusStyle: function(status) {
+                    switch(status) {
+                        case '结算':
+                            return 'text-red';
+                        case '正常':
+                            return 'text-green';
+                        case '洗牌':
+                            return 'text-yellow';
+                    }
+                },
+                transform: function(data, pos) {
+                    var index = 0;
+                    var arr = [...new Array(this.grid.x * this.grid.y)];
+                    for(var x=0; x <this.grid.x; x++) {
+                        for(var y=0; y<this.grid.y; y++) {
+                            index++;
+                            arr[y * this.grid.x + x] = index;
+                        }
+                    };
+                    var clone = Object.assign({}, {data}).data;
+                    return clone[arr[pos] - 1];
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
