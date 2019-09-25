@@ -159,13 +159,15 @@ async function authLogin(url) {
                             balance: 0,
                             vaildBet: 0, //当天有效投注
                             totalBet: 0, // 历史有效投注
-                            roomStatus: {}
+                            roomStatus: {},
+                            isGuest: false
                         };
                         Object.assign(userConfig, {
                             loginToken,
                             pidUsername,
                             hostConfig,
-                            balance: account
+                            isGuest,
+                            balance: account,
                         });
                         resolve(userConfig);
                         ws.close();

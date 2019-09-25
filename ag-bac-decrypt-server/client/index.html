@@ -58,10 +58,10 @@
 <body>
     <div id="app">
 
-        <h2 style="text-align: center">AG - 结果查看(试玩帐号)</h2>
+        <h2 style="text-align: center">AG - 结果查看</h2>
         <p style="text-align: center"><small >(如果时间不动，可能是掉线了请刷新)</small></p>
         <div class="table"  v-for="(roomData, roomName) in tableData">
-            <h4>{{ roomName }} - <font color="red">{{ getTimeout(roomData.timeout) }}</font> <small>状态：<span v-bind:class="getRoomStatusStyle(roomData.status)">{{ roomData.status }}</span></small></h4>
+            <h4>{{ roomName }} - <font color="red">{{ getTimeout(roomData.timeout) }}</font> <small>状态：<span v-bind:class="getRoomStatusStyle(roomData.status)">{{ roomData.status }}</span>&emsp;<a v-bind:href="getVideoUrl(roomData)">(视频链接,右键复制，用potplay播放器打开)</a></small></h4>
             <table border="1" cellspacing="0" cellpadding="0">
                 <tbody>
                     <template v-for="(item, index) in [...new Array(grid.x * grid.y)]">
@@ -72,7 +72,6 @@
                 </tbody>
             </table>
         </div>
-
     </div>
     
     </table>
@@ -89,31 +88,31 @@
                         C001: {
                             status: '正常',
                             timeout: 0,
-                            shoecode: false,
+                            videoUrl: '#',
                             beadList: [  /*{gmcode: 1, bval:1, pval:2}*/ ]
                         },
                         C002: {
                             status: '正常',
                             timeout: 0,
-                            shoecode: false,
+                            videoUrl: '#',
                             beadList: [ /* {gmcode, bval, pval} */]
                         },
                         C003: {
                             status: '正常',
                             timeout: 0,
-                            shoecode: false,
+                            videoUrl: '#',
                             beadList: [ /* {gmcode, bval, pval} */]
                         },
                         C005: {
                             status: '正常',
                             timeout: 0,
-                            shoecode: false,
+                            videoUrl: '#',
                             beadList: [ /* {gmcode, bval, pval} */]
                         },
                         C006: {
                             status: '正常',
                             timeout: 0,
-                            shoecode: false,
+                            videoUrl: '#',
                             beadList: [ /* {gmcode, bval, pval} */]
                         },
                     }
@@ -161,6 +160,9 @@
                         case '洗牌':
                             return 'text-yellow';
                     }
+                },
+                getVideoUrl: function(roomData) {
+                    return roomData.videoUrl;
                 },
                 transform: function(data, pos) {
                     var index = 0;

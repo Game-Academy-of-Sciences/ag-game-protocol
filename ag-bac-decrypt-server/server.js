@@ -13,7 +13,8 @@ const app = new Koa();
 let router = Router().loadMethods();
 
 router.get('/authLogin', async(ctx) => {
-    ctx.body = JSON.stringify(await authLogin());
+    const authUrl = 'http://gci.ig258.com:81/forwardGame.do?params=BfUOR2ITCv/M7XuVWKRFoAUC7dC4hoSVoGvkcu3eVahOhDZACGgvXL9ReD6Zw8h/VsHyi923drCIbyZNpg50TItiLfSGnarM7MOo/TWTyvUo33+IO9H7t2sW2+HGAKbWzSGWFIa70wHdDHTKVwXUCa5e4MII9vJWZkQ6L5kVtXXJ056/YB6TYM8iV0RwlvpmkOmxz44Bpw5YcZOPGk/hvAkq0RuK2QkyS0kkyf4577M=&key=308104dd67c446568e156e411c74b238';
+    ctx.body = JSON.stringify(await authLogin(authUrl));
     ctx.type = 'application/json';
     ctx.status = 200;
 });

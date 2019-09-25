@@ -36,7 +36,8 @@ var userConfig = {
     balance: 0,
     vaildBet: 0, //当天有效投注
     totalBet: 0, // 历史有效投注
-    roomStatus: {}
+    roomStatus: {},
+    isGuest: false
 };
 
 var calcRoomTimer = undefined;
@@ -56,6 +57,11 @@ function setCalcRoomTimer(vue) {
                             if(vue.tableData[vid].status !== '洗牌') {
                                 vue.tableData[vid].status = '结算';
                             }
+
+                            if(vue.tableData[vid].beadList.length ===0) {
+                                vue.tableData[vid].status = '洗牌';
+                            }
+
                         } else {
                             vue.tableData[vid].status = '正常';
                         }
@@ -189,7 +195,15 @@ async function main(vue) {
                         userConfig.hostConfig.roomPortConfig[vid].param = result.data.param;
                         userConfig.hostConfig.roomPortConfig[vid].token = result.data.token;
                     }
+
+                    // vue
+
+                    if(vue.tableData[vid] !== undefined && userConfig.hostConfig.roomPortConfig[vid] !== undefined) {
+                        var streamUrl = userConfig.hostConfig.roomPortConfig[vid].streamUrl;
+                        vue.tableData[vid].videoUrl = format('%s?wsSecret=%s&wsABSTime=%s', streamUrl, userConfig.hostConfig.roomPortConfig[vid].token, userConfig.hostConfig.roomPortConfig[vid].param);
+                    }
                 }
+
                 break;
             case 'GetVideoTokenResp':
             case 'UserVideoTokenResp':
@@ -203,7 +217,7 @@ async function main(vue) {
         }
 
     }, (ws) => {
-        ws.send(cmd.plazaLogin(userConfig.pidUsername, userConfig.loginToken, true));
+        ws.send(cmd.plazaLogin(userConfig.pidUsername, userConfig.loginToken, userConfig.isGuest));
     }, (ws) => {
         console.log('close');
         clearCalcRoomTimer();
