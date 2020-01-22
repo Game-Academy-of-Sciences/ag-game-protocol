@@ -61,9 +61,9 @@ async function authLogin(url) {
                 }
 
                 if(url === null) {
-                    console.log('获取试玩url成功');
-                } else {
                     console.log('获取试玩url失败');
+                } else {
+                    console.log('获取试玩url成功');
                 }
             } else {
                 isGuest = false;
