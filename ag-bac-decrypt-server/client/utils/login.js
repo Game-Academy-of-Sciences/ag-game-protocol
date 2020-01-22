@@ -12,6 +12,7 @@ const cmd = require('./ag/cmd');
 const { RoomFlagsMap, plazeFlagsMap } = require('./ag/cmd');
 
 const Ws = require('./ws');
+const qs = require('qs');
 
 
 axiosCookieJarSupport(axios);
@@ -41,7 +42,29 @@ async function authLogin(url) {
         var isGuest = true;
         try {
             if(url == undefined) {
-                url = 'http://gci.ig50.com:81/forwardGame.do?params=BfUOR2ITCv/M7XuVWKRFoLEAQktsSbZH5igCG/uCJBsLkIDW/+PfMnxsg6IgOhW4irEk9czUAgO6v9oqNHF8n2an8Y3zxL8Icwh/E64a0JtKrAA0qJyh+bnJA4SJ4+qu6nIObRoTKVkRrGkuLTsbNxJ0/Kdt3GBPWP59mZc0PVi9iHiZJj/3Q9x/o1NwdKS55/wewSbL6dLbwch9DERWIitazTI8ZI+fe1/iZloMyoDhr1fsVVCBHf95iNPIkzTLyRF8RJK8NiCZhN9q6f1KzQ==&key=210b2174778ee06b27f897dcf7cc4a22';
+                url = null;
+                var czjUrl = 'http://czj229.com/caiZhiJiaCPLoginWeb/app/loginDemoVerification';
+                var headers = {
+                    'Content-Type': 'application/json'
+                }
+                var cookieJar = new tough.CookieJar();
+                var resp = await axios.post(czjUrl, {}, { headers, jar: cookieJar, withCredentials: true });
+                if(resp.data.success) {
+                    czjUrl = 'http://czj229.com/caiZhiJiaCPLoginWeb/app/playHoldem';
+
+                    var data = {"product":"LIVE_AG","type":"undefined"};
+
+                    resp = await axios.post(czjUrl, data, {headers, jar: cookieJar, withCredentials: true}) ;
+                    if(resp.data.success) {
+                        url = resp.data.link;
+                    }
+                }
+
+                if(url === null) {
+                    console.log('获取试玩url成功');
+                } else {
+                    console.log('获取试玩url失败');
+                }
             } else {
                 isGuest = false;
             }
