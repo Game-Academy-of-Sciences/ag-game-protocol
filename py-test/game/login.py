@@ -1,7 +1,7 @@
 
 
 from .utils import *
-
+import json
 
 def login_from_url(login_url=None):
     try:
@@ -9,7 +9,26 @@ def login_from_url(login_url=None):
 
         if not login_url:
             is_guest = True
-            login_url = 'http://gci.ig50.com:81/forwardGame.do?params=BfUOR2ITCv/M7XuVWKRFoLEAQktsSbZH5igCG/uCJBsLkIDW/+PfMnxsg6IgOhW4irEk9czUAgO6v9oqNHF8n2an8Y3zxL8Icwh/E64a0JtKrAA0qJyh+bnJA4SJ4+qu6nIObRoTKVkRrGkuLTsbNxJ0/Kdt3GBPWP59mZc0PVi9iHiZJj/3Q9x/o1NwdKS55/wewSbL6dLbwch9DERWIitazTI8ZI+fe1/iZloMyoDhr1fsVVCBHf95iNPIkzTLyRF8RJK8NiCZhN9q6f1KzQ==&key=210b2174778ee06b27f897dcf7cc4a22'
+            # login_url = 'http://gci.ig50.com:81/forwardGame.do?params=BfUOR2ITCv/M7XuVWKRFoLEAQktsSbZH5igCG/uCJBsLkIDW/+PfMnxsg6IgOhW4irEk9czUAgO6v9oqNHF8n2an8Y3zxL8Icwh/E64a0JtKrAA0qJyh+bnJA4SJ4+qu6nIObRoTKVkRrGkuLTsbNxJ0/Kdt3GBPWP59mZc0PVi9iHiZJj/3Q9x/o1NwdKS55/wewSbL6dLbwch9DERWIitazTI8ZI+fe1/iZloMyoDhr1fsVVCBHf95iNPIkzTLyRF8RJK8NiCZhN9q6f1KzQ==&key=210b2174778ee06b27f897dcf7cc4a22'
+            login_url = ''
+
+            czjUrl = 'http://czj229.com/caiZhiJiaCPLoginWeb/app/loginDemoVerification'
+            headers = {
+                'Content-Type': 'application/json'
+            }
+            login_session = requests.session()
+            try:
+                data = login_session.post(czjUrl, data='{}', headers=headers)
+
+                if data.json()['success']:
+                    data = {"product":"LIVE_AG","type":"undefined"}
+                    czjUrl = 'http://czj229.com/caiZhiJiaCPLoginWeb/app/playHoldem'
+                    data = login_session.post(czjUrl, data=json.dumps(data), headers=headers).json()
+                    if data['success']:
+                        login_url = data['link']
+            except:
+                import traceback
+                print(traceback.format_exc())
         else:
             is_guest = False
         

@@ -57,9 +57,20 @@ def process_plaza(ws, ws_data, callback):
     if flags  in [301569, 301584, 301825, 301840, ]:
         print('11')
     '''
+    '''
     if flags  == 301825:
         print(11)
+    '''
+
+    # "GET_ALL_BAC_RESULTS"] = 196617
+    if flags == 172049:
+        print('游戏结果扩展')
+        return 
+    if flags == 368642:
+        print('翻拍开牌')
+        return 
     
+
     # 登录
     # LoginPlazaResp pass
     if flags == 262151:
@@ -74,6 +85,8 @@ def process_plaza(ws, ws_data, callback):
             
             output_plaza_text('plaza 登录成功')
             callback('login', ws, plaza_info, True)
+
+
             # 开始登录
             return
         else:
@@ -104,6 +117,9 @@ def process_plaza(ws, ws_data, callback):
     # 百家乐游戏进入赌桌后获取所有同类型结果
     # BacGameResultResp
     if flags == 131089:
+        data = struct.pack('>iii4s', 196617, 16, 0, b'C001')
+        ws.send_binary(data)
+
         flags, length, _, vid, res, code, bval, pval, num, pair = struct.unpack('>iii4sB14sBBBB', ws_data[:35])
         vid = trim(vid).decode()
         code = trim(code).decode()
@@ -130,7 +146,7 @@ def process_plaza(ws, ws_data, callback):
             plaza_info.room_time[vid] = timeout
             callback('reset_time', ws, plaza_info, vid, timeout)
 
-        print( vid, status, timeout, max_timeout, last_res)
+        # print( vid, status, timeout, max_timeout, last_res)
         output_plaza_text('plaza 重置时间 vid: {} \t timeout: {}'.format(vid, timeout))
 
     # 有效投注
@@ -159,8 +175,9 @@ def process_plaza(ws, ws_data, callback):
 
         output_plaza_text('plaza 异常退出(可能是异地登录)')
         return
-    
-
+    else:
+        # print(flags)
+        pass
 
 def connect_plaza(login_info):
     ws = create_connection(f'ws://{login_info.port_conf.domain}:{login_info.port_conf.plaza}')

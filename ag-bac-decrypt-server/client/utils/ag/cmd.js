@@ -143,11 +143,11 @@ function roomEnter(vid) {
 }
 
 function roomExit() {
-    return struct.pack('>iii4s', 65541, 12, 0);
+    return struct.pack('>iii', 65541, 12, 0);
 }
 
-function roomGetCurrentGameStatus() {
-    return struct.pack('>iii4s', 65558, 12, 0);
+function roomGetCurrentGameStatus(vid) {
+    return struct.pack('>iii', 65558, 12, 0);
 }
 
 /*
@@ -158,6 +158,13 @@ function roomDownBet(seqNo, gmcode, betType, money, {userEncryptKey, userDecrypt
 */
 
 /*------ Plaza ------*/
+
+/*
+不知道是room还是plaza的,具体返回结果也不清楚是哪个标识
+function plazaGetAllBacResults(vid) {
+    return struct.pack('>iii4s', 196617, 16, 0, vid);
+}
+*/
 
 function plazaGetVaildBet(pidUsername) {
     return struct.pack('>iii30s', 131107, 42, 0, pidUsername);
@@ -179,7 +186,6 @@ module.exports = {
     plazeFlagsMap,
     RoomFlagsMap,
 
-    
     getTickData,
     getPingData,
 
